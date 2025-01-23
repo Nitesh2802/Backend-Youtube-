@@ -61,7 +61,7 @@ const updateTweet = asyncHandler(async (req, res) => {
     const tweet=await Tweet.findById(tweetId);
 
     //check ownership;
-    if(tweet.owner.toString()!=req.user._id){
+    if(tweet.owner.toString()!==req.user._id){
         throw new ApiError(400,"Invalid user");
     }
 
@@ -91,7 +91,7 @@ const deleteTweet = asyncHandler(async (req, res) => {
     }
 
     //check ownership;
-    if(tweet.author.toString()!=req.user._id){
+    if(tweet.author.toString()!==req.user._id){
         throw new ApiError(403,"User not allowed to delete this tweet");
     }
 

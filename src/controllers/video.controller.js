@@ -10,6 +10,39 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js"
 const getAllVideos = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
     //TODO: get all videos based on query, sort, pagination
+     // Build the query filter
+     const filter = {};
+     if (query) {
+         filter.title = { $regex: query, $options: "i" }; // Case-insensitive search
+     }
+     if (userId) {
+         filter.uploadedBy = userId;
+     }
+ 
+     // Handle sorting
+     const sort = { [sortBy]: sortType === "asc" ? 1 : -1 };
+ 
+     // Implement pagination
+     const skip = (page - 1) * limit;
+ 
+     // Query the database
+     const videos = await Video.find(filter)
+         .sort(sort)
+         .skip(skip)
+         .limit(Number(limit));
+ 
+     // Get total count
+     const totalVideos = await Video.countDocuments(filter);
+ 
+     // Send response
+     return res.status(200).json(
+         new ApiResponse(200, {
+             videos,
+             totalVideos,
+             currentPage: Number(page),
+             totalPages: Math.ceil(totalVideos / limit),
+         }, "Videos retrieved successfully")
+     );
 })
 
 const publishAVideo = asyncHandler(async (req, res) => {
@@ -63,7 +96,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     }
     
     //check ownership
-    if(video.owner.toString()!=req.user._id){
+    if(video.owner.toString()!==req.user._id){
         throw new ApiError(403,"User not allowed to update the video");
     }
     video.title=title || video.title;
@@ -88,7 +121,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
     }
 
     //owner check;
-    if(video.owner.toString()!=req.user._id){
+    if(video.owner.toString()!==req.user._id){
         throw new ApiError(403,"forbidden access");
     }
 
@@ -109,7 +142,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     }
 
     //check ownership of video;
-    if(video.owner.toString()!=req.user._id){
+    if(video.owner.toString()!==req.user._id){
         //if video owner and logged in user are not same then user can not toggle;
         throw new ApiError(403,"Forbidden access");
     }
