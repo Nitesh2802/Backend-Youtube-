@@ -94,31 +94,6 @@ db.subscriptions.aggregate([
 Installation
 Clone the repository:
 
-bash
-Copy
-Edit
-git clone https://github.com/Nitesh2802/Backend-Youtube-.git
-Navigate to the project directory:
-
-bash
-Copy
-Edit
-cd Backend-Youtube-
 Install dependencies:
-
-bash
-Copy
-Edit
 npm install
 Set up environment variables:
-
-Create a .env file in the root directory and add the following:
-plaintext
-Copy
-Edit
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-CLOUDINARY_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-JWT_SECRET=your_jwt_secret
